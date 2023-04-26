@@ -28,7 +28,12 @@ import androidx.compose.ui.unit.sp
  * @param strokeColor th color of the progress stroke
  * @param textColor the color of the progress text
  * @param fontSize progress text fontSize
- * @param 
+ * @param radios the radios of the progress circle
+ * @param strokeWidth the width off the progress stroke
+ * @param fill boolean value to fill the circle the circle or not
+ * @param roundStroke boolean value to decide making the edges of the progress bar rounded or not
+ * @param animationDuration the duration of the progress animation
+ * @param animationDelay to delay the beginning of the loading
  */
 @Composable
 fun CustomProgressBar(

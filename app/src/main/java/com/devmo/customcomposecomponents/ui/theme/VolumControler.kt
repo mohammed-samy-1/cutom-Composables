@@ -113,6 +113,15 @@ private fun Bar(
     }
 }
 
+/**
+ * @author Mohammed Samy
+ * @param barCount number of bars
+ * @param activeBarsColor the color of active bars
+ * @param inActiveBarsColor the color of the inactive bars
+ * @param barCornerRadius to make the bars rounded
+ * @param limitingAngle angel to block the knob from moving to make limit in the start and end of the cycle
+ * @param painter Painter object to set the shape of the knob should be circular
+ */
 @Composable
 fun ControlBar(
     modifier: Modifier = Modifier,
