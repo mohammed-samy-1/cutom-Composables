@@ -28,7 +28,6 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-
 private fun Knob(
     modifier: Modifier = Modifier,
     limitingAngle: Float = 25f,
