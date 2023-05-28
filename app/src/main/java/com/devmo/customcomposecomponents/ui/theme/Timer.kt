@@ -70,7 +70,7 @@ fun TimerView(
         contentAlignment = Alignment.Center,
         modifier = Modifier.onSizeChanged {
             size = it
-        }
+        }.aspectRatio(1f)
     ) {
         Canvas(modifier = modifier.fillMaxSize()) {
             drawArc(

@@ -21,6 +21,8 @@ import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import kotlin.math.PI
 import kotlin.math.atan2
@@ -166,4 +168,10 @@ fun ControlBar(
         )
         Spacer(modifier = modifier.size(10.dp))
     }
+}
+
+@Preview
+@Composable
+fun PreviewParame() {
+    ControlBar()
 }
