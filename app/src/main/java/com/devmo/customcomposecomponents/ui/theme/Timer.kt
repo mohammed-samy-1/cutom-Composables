@@ -41,7 +41,8 @@ fun TimerView(
     inActiveColor: Color = Color.Gray,
     initialValue: Float = 1.0f,
     strokeWidth: Dp = 5.dp,
-    onFinished : () -> Unit
+    animatedText: Boolean = false,
+    onFinished: () -> Unit
 ) {
     var size by remember {
         mutableStateOf(IntSize.Zero)
@@ -55,22 +56,24 @@ fun TimerView(
     var isTimerRunning by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect(key1 = currentTime , key2 = isTimerRunning) {
-        if (currentTime > 0 && isTimerRunning){
-            Log.e("mohammed samy", "TimerView: $currentTime  $isTimerRunning", )
+    LaunchedEffect(key1 = currentTime, key2 = isTimerRunning) {
+        if (currentTime > 0 && isTimerRunning) {
+            Log.e("mohammed samy", "TimerView: $currentTime  $isTimerRunning")
             delay(30L)
             currentTime -= 30L
-            Log.e("mohammed samy", "TimerView: $currentTime " )
+            Log.e("mohammed samy", "TimerView: $currentTime ")
             value = currentTime / totalTime.toFloat()
-        }else{
+        } else {
             onFinished()
         }
     }
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.onSizeChanged {
-            size = it
-        }.aspectRatio(1f)
+        modifier = Modifier
+            .onSizeChanged {
+                size = it
+            }
+            .aspectRatio(1f)
     ) {
         Canvas(modifier = modifier.fillMaxSize()) {
             drawArc(
@@ -103,7 +106,9 @@ fun TimerView(
                 cap = StrokeCap.Round
             )
         }
-        Text(
+        if (animatedText) {
+            TimerText(count = currentTime)
+        } else Text(
             text = (currentTime / 1000f).roundToInt().toString(),
             fontSize = 30.sp,
             color = Color.Blue
@@ -118,7 +123,7 @@ fun TimerView(
                     }
                     else -> {
                         isTimerRunning = isTimerRunning.not()
-                        Log.e("mohammed samy", "TimerView: $isTimerRunning ", )
+                        Log.e("mohammed samy", "TimerView: $isTimerRunning ")
                     }
 
                 }
@@ -134,7 +139,7 @@ fun TimerView(
                 text = when {
                     isTimerRunning && currentTime > 0L -> "Pause"
                     !isTimerRunning && currentTime > 0L -> "Start"
-                    else-> "Restart"
+                    else -> "Restart"
                 },
                 color = Color.White
             )
@@ -151,7 +156,7 @@ fun P() {
         contentAlignment = Alignment.Center
     ) {
         Box(modifier = Modifier.size(250.dp)) {
-            TimerView{
+            TimerView {
 
             }
         }

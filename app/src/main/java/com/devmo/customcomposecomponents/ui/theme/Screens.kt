@@ -33,16 +33,16 @@ fun HomeScreen(navController: NavController) {
             Text("Go to Progress Bar")
         }
         Button(
-            onClick = { navController.navigate(Navication.Dropdown.name) },
-            Modifier.fillMaxWidth(.9f)
-        ) {
-            Text("Go to Dropdown")
-        }
-        Button(
             onClick = { navController.navigate(Navication.Timer.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Timer")
+        }
+        Button(
+            onClick = { navController.navigate(Navication.Dropdown.name) },
+            Modifier.fillMaxWidth(.9f)
+        ) {
+            Text("Go to Dropdown")
         }
         Button(
             onClick = { navController.navigate(Navication.VolumeController.name) },
@@ -112,7 +112,7 @@ fun DropdownScreen(navController: NavController) {
             vibrate.value = false
         }
         DropDownAnimator {
-            TimerView(totalTime = 1000 * 3) {
+            TimerView(totalTime = 1000 * 3 ,  animatedText = true) {
                 vibrate.value = true
             }
         }
@@ -139,6 +139,14 @@ fun TimerScreen(navController: NavController) {
             TimerView(totalTime = 60 * 1000L, onFinished = {
                 vibrate.value = true
             })
+        }
+        Box(modifier = Modifier.size(250.dp)) {
+            TimerView(
+                totalTime = 60 * 1000L, onFinished = {
+                    vibrate.value = true
+                },
+                animatedText = true
+            )
         }
 
     }
