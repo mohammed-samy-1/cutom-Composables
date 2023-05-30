@@ -1,11 +1,11 @@
 package com.devmo.customcomposecomponents.ui.theme
 
-import android.widget.Toast
-import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,17 +20,20 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import kotlin.math.abs
 import com.devmo.customcomposecomponents.R
+import com.steliospapamichail.creditcardmasker.utils.CardType
+import com.steliospapamichail.creditcardmasker.utils.getCardTypeFromNumber
 import com.steliospapamichail.creditcardmasker.viewtransformations.CardNumberMask
 import com.steliospapamichail.creditcardmasker.viewtransformations.ExpirationDateMask
+import kotlinx.coroutines.delay
 
 var numberInput by mutableStateOf(false)
 var dateInput by mutableStateOf(false)
@@ -50,8 +53,11 @@ fun Modifier.animatedBorder(
     strokeWith: Dp, animationDuration: Int, isVisible: Boolean = false
 ) = composed {
     if (isVisible) {
-        val gradient =
-            listOf(Color(0xFFDAA520), Color(0xFFFFDF7E), Color(0xFFB8860B), Color(0xFFFFD700))
+        val gradient = listOf(
+            Color(0xFFB39DDB), // Light purple
+            Color(0xFF6A1B9A)  // Dark purple
+        )
+        //listOf(Color(0xFFDAA520), Color(0xFFFFDF7E), Color(0xFFB8860B), Color(0xFFFFD700))
         val infiniteTransition = rememberInfiniteTransition()
         val angle by infiniteTransition.animateFloat(
             initialValue = 0f, targetValue = 360f, animationSpec = infiniteRepeatable(
@@ -64,7 +70,7 @@ fun Modifier.animatedBorder(
 
             val strokeWidthPx = strokeWith.toPx()
             val width = size.width
-            val height = size.height
+            val height = size.height - 25
 
             drawContent()
 
@@ -74,7 +80,7 @@ fun Modifier.animatedBorder(
                 // Destination
                 drawRect(
                     color = Color.Gray,
-                    topLeft = Offset(strokeWidthPx / 2, strokeWidthPx / 2),
+                    topLeft = Offset(strokeWidthPx / 2, (strokeWidthPx / 2) + 12.5f),
                     size = Size(width - strokeWidthPx, height - strokeWidthPx),
                     style = Stroke(strokeWidthPx)
                 )
@@ -95,86 +101,96 @@ fun Modifier.animatedBorder(
     } else return@composed this@animatedBorder
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun CreditCard(
-    modifier: Modifier = Modifier
-) {
+fun CreditCard() {
     val rotateY = animateFloatAsState(
         targetValue = if (CVVInput) 180f else 0f, animationSpec = tween(
             durationMillis = 500
         )
     )
-    BoxWithConstraints(modifier = Modifier
-        .padding(7.5.dp)
-        .aspectRatio(1.586f)
-        .clip(RoundedCornerShape(10.dp))
-        .background(Color(0xFF280028))
-        .graphicsLayer {
-            rotationY = rotateY.value
-            rotationX = 0f
-            rotationZ = 0f
-        }) {
-        val width = constraints.maxWidth
-        val height = constraints.maxHeight
-
-        val color1 = Offset(0f, height * 0.3f)
-        val color2 = Offset(width * 0f, height * 0.35f)
-        val color3 = Offset(0.4f * width, height * 0.05f)
-        val color4 = Offset(width * 0.75f, height * 0.7f)
-        val color5 = Offset(width * 1.4f, height.toFloat())
-
-        val mediumColoredPath = Path().apply {
-            moveTo(color1.x, color1.y)
-            standardQuadFromTo(color1, color2)
-            standardQuadFromTo(color2, color3)
-            standardQuadFromTo(color3, color4)
-            standardQuadFromTo(color4, color5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-
-        }
-        val lightPoint1 = Offset(0f, height * 0.35f)
-        val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
-        val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
-        val lightPoint4 = Offset(width * 0.65f, height.toFloat())
-        val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
-        val lightColoredPath = Path().apply {
-            moveTo(color1.x, color1.y)
-            standardQuadFromTo(lightPoint1, lightPoint2)
-            standardQuadFromTo(lightPoint2, lightPoint3)
-            standardQuadFromTo(lightPoint3, lightPoint4)
-            standardQuadFromTo(lightPoint4, lightPoint5)
-            lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
-            lineTo(-100f, height.toFloat() + 100f)
-            close()
-        }
-        Canvas(
-            modifier = Modifier.fillMaxSize()
+    Box(modifier = Modifier.graphicsLayer {
+        rotationY = rotateY.value
+        rotationX = 0f
+        rotationZ = 0f
+    }) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .padding(7.5.dp)
+                .aspectRatio(1.586f)
+                .clip(RoundedCornerShape(10.dp))
+                .background(Color(0xFF3F003F))
         ) {
-            drawPath(
-                path = mediumColoredPath, color = Color(0xC32E002E)
-            )
-            drawPath(
-                path = lightColoredPath, color = Color(0xFF33003F)
-            )
+            val width = constraints.maxWidth
+            val height = constraints.maxHeight
+
+            val color1 = Offset(0f, height * 0.3f)
+            val color2 = Offset(width * 0f, height * 0.35f)
+            val color3 = Offset(0.4f * width, height * 0.05f)
+            val color4 = Offset(width * 0.75f, height * 0.7f)
+            val color5 = Offset(width * 1.4f, height.toFloat())
+
+            val mediumColoredPath = Path().apply {
+                moveTo(color1.x, color1.y)
+                standardQuadFromTo(color1, color2)
+                standardQuadFromTo(color2, color3)
+                standardQuadFromTo(color3, color4)
+                standardQuadFromTo(color4, color5)
+                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                lineTo(-100f, height.toFloat() + 100f)
+                close()
+
+            }
+            val lightPoint1 = Offset(0f, height * 0.35f)
+            val lightPoint2 = Offset(width * 0.1f, height * 0.4f)
+            val lightPoint3 = Offset(width * 0.3f, height * 0.35f)
+            val lightPoint4 = Offset(width * 0.65f, height.toFloat())
+            val lightPoint5 = Offset(width * 1.4f, -height.toFloat() / 3f)
+            val lightColoredPath = Path().apply {
+                moveTo(color1.x, color1.y)
+                standardQuadFromTo(lightPoint1, lightPoint2)
+                standardQuadFromTo(lightPoint2, lightPoint3)
+                standardQuadFromTo(lightPoint3, lightPoint4)
+                standardQuadFromTo(lightPoint4, lightPoint5)
+                lineTo(width.toFloat() + 100f, height.toFloat() + 100f)
+                lineTo(-100f, height.toFloat() + 100f)
+                close()
+            }
+            Canvas(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                drawPath(
+                    path = mediumColoredPath, color = Color(0xC34D004D)
+                )
+                drawPath(
+                    path = lightColoredPath, color = Color(0x8058006D)
+                )
+            }
+            var flip by remember {
+                mutableStateOf(false)
+            }
+            LaunchedEffect(key1 = CVVInput, block = {
+                delay(100)
+                flip = CVVInput
+            })
+            if (!flip) CardFront()
+            else CreditCardBack()
+
         }
-
-        if (!CVVInput) CardFront(
-            modifier = modifier
-        )
-        else CreditCardBack()
-
     }
-
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun CardFront(
-    modifier: Modifier,
-) {
+private fun CardFront() {
+    val cardTypeSrcId = when (getCardTypeFromNumber(cardNumber)) {
+        CardType.VISA -> R.drawable.visa
+        CardType.MASTERCARD -> R.drawable.mastercard
+        CardType.AMERICAN_EXPRESS -> R.drawable.american_express
+        CardType.JCB -> R.drawable.jcb
+        CardType.MAESTRO -> R.drawable.maestro
+        else -> R.drawable.placeholer
 
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -191,85 +207,145 @@ fun CardFront(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.chip),
-                contentDescription = "Visa Logo",
+                contentDescription = "Chip",
                 modifier = Modifier
                     .size(50.dp)
                     .padding(end = 8.dp),
                 contentScale = ContentScale.Fit
             )
-            Text(
-                text = cardNumber,
-                color = Color.White,
-                style = MaterialTheme.typography.h6,
-                textAlign = TextAlign.Center,
+            TextField(
+                value = cardNumber,
+                onValueChange = {},
+                placeholder = {
+                    Text(
+                        "XXXX XXXX XXXX XXXX",
+                        color = Color.White.copy(alpha = .8f)
+                    )
+                },
+                visualTransformation = CardNumberMask(),
                 modifier = Modifier
-                    .weight(1f)
                     .animatedBorder(2.dp, 2000, isVisible = numberInput)
-                    .padding(5.dp)
+                    .focusable(false)
+                    .widthIn(min = 150.dp, max = 270.dp)
+                    .padding(horizontal = 10.dp),
+                readOnly = true,
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    textColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                singleLine = true,
+                textStyle = TextStyle(fontSize = 20.sp)
             )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Column(Modifier.align(Alignment.BottomCenter)) {
 
-
-            Row(
-                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(horizontal = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(
+                modifier = Modifier
+                    .animatedBorder(
+                        2.dp,
+                        2000,
+                        isVisible = nameInput
+                    )
+                    .widthIn(min = 150.dp, max = 180.dp)
             ) {
                 Text(
                     text = "CARDHOLDER NAME",
                     color = Color.White.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.caption,
-
+                    modifier = Modifier.offset(y = 15.dp, x = 15.dp)
+                )
+                TextField(
+                    value = cardholderName, onValueChange = {},
+                    placeholder = {
+                        Text(
+                            "Your name",
+                            color = Color.White.copy(alpha = .8f),
+                            modifier = Modifier.padding(0.dp)
+                        )
+                    },
+                    readOnly = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        textColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    singleLine = true,
+                    modifier = Modifier.widthIn(min = 150.dp, max = 180.dp)
+                )
+            }
+            Spacer(modifier = Modifier.width(20.dp))
+            Column(
+                horizontalAlignment = Alignment.Start,
+                modifier = Modifier
+                    .animatedBorder(
+                        2.dp,
+                        2000,
+                        isVisible = dateInput
                     )
+                    .width(150.dp)
+            ) {
                 Text(
                     text = "EXPIRATION DATE",
                     color = Color.White.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.caption,
                     textAlign = TextAlign.End,
+                    modifier = Modifier
+                        .offset(y = 15.dp)
+                        .padding(start = 15.dp, end = 10.dp)
+                )
+                TextField(
+                    value = expirationDate, onValueChange = {},
+                    placeholder = { Text("MM/YY", color = Color.White.copy(alpha = .8f)) },
+                    visualTransformation = ExpirationDateMask(),
+                    readOnly = true,
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        textColor = Color.White,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    singleLine = true
+
                 )
             }
 
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = cardholderName,
-                    color = Color.White,
-                    style = MaterialTheme.typography.body1,
+        }
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+        ) {
+            AnimatedContent(
+                targetState = cardTypeSrcId,
+                transitionSpec = {
+                    slideInVertically { if (cardTypeSrcId == R.drawable.placeholer) it else -it } with slideOutVertically { if (cardTypeSrcId == R.drawable.placeholer) -it else it }
+                }
+            ) {
+                Image(
+                    painter = painterResource(id = cardTypeSrcId),
+                    contentDescription = "Card Chip",
                     modifier = Modifier
-                        .weight(1f)
-                        .animatedBorder(
-                            2.dp,
-                            2000,
-                            isVisible = nameInput
-                        )
-                )
-                Text(
-                    text = expirationDate,
-                    color = Color.White,
-                    style = MaterialTheme.typography.body1,
-                    textAlign = TextAlign.End,
-                    modifier = Modifier.animatedBorder(
-                        2.dp,
-                        2000,
-                        isVisible = dateInput
-                    )
+                        .size(50.dp)
                 )
             }
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.visa),
-            contentDescription = "Card Chip",
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(50.dp)
-        )
+
     }
 }
 
 @Composable
-fun CreditCardBack() {
+private fun CreditCardBack() {
     Box(modifier = Modifier
         .fillMaxWidth()
         .clip(MaterialTheme.shapes.medium)
@@ -306,11 +382,11 @@ fun CreditCardBack() {
                     .height(45.dp)
                     .padding(horizontal = 40.dp)
                     .background(Color.White)
-                    .padding(start = 3.dp)
+                    .padding(3.dp)
 
             ) {
                 Text(
-                    text = "123",
+                    text = cvv,
                     color = MaterialTheme.colors.onSurface,
                     style = MaterialTheme.typography.body1,
                     modifier = Modifier.align(Alignment.CenterStart)
@@ -323,33 +399,20 @@ fun CreditCardBack() {
     }
 }
 
-@Preview
+
 @Composable
-fun Card() {
+fun CreditCardForm() {
     Column {
         CreditCard()
-
-        var text by remember { mutableStateOf("") }
-
-
         PaymentInputForm()
-
-        Box(
-            modifier = Modifier
-                .size(400.dp, 70.dp)
-                .background(Color.Black)
-                .animatedBorder(1.dp, 500)
-        )
     }
-
 }
 
 @Composable
-fun PaymentInputForm() {
-
-
+private fun PaymentInputForm() {
     Column(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .padding(16.dp)
     ) {
         // Cardholder Name
 
@@ -360,7 +423,13 @@ fun PaymentInputForm() {
             onValueChange = { cardNumber = it },
             label = { Text("Card Number") },
             visualTransformation = CardNumberMask(),
-            modifier = Modifier.onFocusChanged { numberInput = it.isFocused })
+            modifier = Modifier
+                .onFocusChanged { numberInput = it.isFocused }
+                .fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number
+            )
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -368,7 +437,8 @@ fun PaymentInputForm() {
             modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedTextField(value = cardholderName, onValueChange = {
-                cardholderName = it
+                if (it.length <= 16)
+                    cardholderName = it
             }, label = { Text("Cardholder Name") },
                 modifier = Modifier
                     .weight(2f)
@@ -378,12 +448,15 @@ fun PaymentInputForm() {
             // Expiration Date
             OutlinedTextField(
                 value = expirationDate,
-                onValueChange = { expirationDate = it },
+                onValueChange = { if (it.length <= 4) expirationDate = it },
                 visualTransformation = ExpirationDateMask(),
                 label = { Text("Date") },
                 modifier = Modifier
                     .weight(1f)
-                    .onFocusChanged { dateInput = it.isFocused }
+                    .onFocusChanged { dateInput = it.isFocused },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -391,13 +464,19 @@ fun PaymentInputForm() {
             // CVV
             OutlinedTextField(
                 value = cvv,
-                onValueChange = { cvv = it },
+                onValueChange = {
+                    if (it.length <= 3)
+                        cvv = it
+                },
                 label = { Text("CVV") },
                 modifier = Modifier
                     .weight(1f)
                     .onFocusChanged {
                         CVVInput = it.isFocused
-                    }
+                    },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                )
             )
         }
 

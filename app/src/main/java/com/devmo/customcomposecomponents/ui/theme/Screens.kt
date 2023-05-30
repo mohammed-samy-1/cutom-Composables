@@ -1,11 +1,13 @@
 package com.devmo.customcomposecomponents.ui.theme
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
@@ -49,6 +51,12 @@ fun HomeScreen(navController: NavController) {
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Volume Controller")
+        }
+        Button(
+            onClick = { navController.navigate(Navication.CreditCard.name) },
+            Modifier.fillMaxWidth(.9f)
+        ) {
+            Text("Go to Credit Card")
         }
     }
 }
@@ -112,7 +120,7 @@ fun DropdownScreen(navController: NavController) {
             vibrate.value = false
         }
         DropDownAnimator {
-            TimerView(totalTime = 1000 * 3 ,  animatedText = true) {
+            TimerView(totalTime = 1000 * 3, animatedText = true) {
                 vibrate.value = true
             }
         }
@@ -168,5 +176,12 @@ fun VolumeControllerScreen(navController: NavController) {
         ) {
             ControlBar()
         }
+    }
+}
+
+@Composable
+fun CreditCardScreen(navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+        CreditCardForm()
     }
 }
