@@ -112,6 +112,7 @@ fun CreditCard() {
         rotationY = rotateY.value
         rotationX = 0f
         rotationZ = 0f
+        cameraDistance = 30f
     }) {
         BoxWithConstraints(
             modifier = Modifier
@@ -353,7 +354,8 @@ private fun CreditCardBack() {
             rotationY = -180f
             rotationX = 0f
             rotationZ = 0f
-        }) {
+        }
+    ) {
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
