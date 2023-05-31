@@ -14,6 +14,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
@@ -65,7 +66,7 @@ fun Modifier.animatedBorder(
                 repeatMode = RepeatMode.Restart
             )
         )
-        val brush = Brush.sweepGradient(gradient)
+        val brush = Brush.linearGradient(gradient)
         Modifier.drawWithContent {
 
             val strokeWidthPx = strokeWith.toPx()
@@ -78,11 +79,12 @@ fun Modifier.animatedBorder(
                 val checkPoint = saveLayer(null, null)
 
                 // Destination
-                drawRect(
+                drawRoundRect(
                     color = Color.Gray,
                     topLeft = Offset(strokeWidthPx / 2, (strokeWidthPx / 2) + 12.5f),
                     size = Size(width - strokeWidthPx, height - strokeWidthPx),
-                    style = Stroke(strokeWidthPx)
+                    style = Stroke(strokeWidthPx),
+                    cornerRadius = CornerRadius(10.dp.toPx(), 10.dp.toPx())
                 )
 
                 // Source
@@ -225,7 +227,7 @@ private fun CardFront() {
                 },
                 visualTransformation = CardNumberMask(),
                 modifier = Modifier
-                    .animatedBorder(2.dp, 2000, isVisible = numberInput)
+                    .animatedBorder(3.dp, 2000, isVisible = numberInput)
                     .focusable(false)
                     .widthIn(min = 150.dp, max = 270.dp)
                     .padding(horizontal = 10.dp),
@@ -253,7 +255,7 @@ private fun CardFront() {
             Column(
                 modifier = Modifier
                     .animatedBorder(
-                        2.dp,
+                        3.dp,
                         2000,
                         isVisible = nameInput
                     )
@@ -290,7 +292,7 @@ private fun CardFront() {
                 horizontalAlignment = Alignment.Start,
                 modifier = Modifier
                     .animatedBorder(
-                        2.dp,
+                        3.dp,
                         2000,
                         isVisible = dateInput
                     )
