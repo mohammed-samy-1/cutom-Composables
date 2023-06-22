@@ -23,6 +23,7 @@ fun MyApp() {
         composable(Navication.Timer.name) { TimerScreen(navController = navController) }
         composable(Navication.VolumeController.name) { VolumeControllerScreen(navController = navController) }
         composable(Navication.CreditCard.name) { CreditCardScreen(navController = navController) }
+        composable(Navication.DayNightSwitch.name) { DayNightSwitch(navController = navController) }
     }
 }
 
@@ -34,4 +35,5 @@ sealed class Navication(val name: String) {
     object Timer : Navication("timer")
     object VolumeController : Navication("volume_controller")
     object CreditCard : Navication("card")
+    object DayNightSwitch : Navication("Switch")
 }

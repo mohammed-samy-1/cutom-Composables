@@ -1,5 +1,7 @@
 package com.devmo.customcomposecomponents.ui.theme
 
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Button
@@ -57,6 +59,12 @@ fun HomeScreen(navController: NavController) {
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Credit Card")
+        }
+        Button(
+            onClick = { navController.navigate(Navication.DayNightSwitch.name) },
+            Modifier.fillMaxWidth(.9f)
+        ) {
+            Text("Go to DayNight Switch")
         }
     }
 }
@@ -181,7 +189,33 @@ fun VolumeControllerScreen(navController: NavController) {
 
 @Composable
 fun CreditCardScreen(navController: NavController) {
-    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+    ) {
         CreditCardForm()
+    }
+}
+
+@Composable
+fun DayNightSwitch(navController: NavController) {
+    var checked by remember {
+        mutableStateOf(false)
+    }
+    val bg = animateColorAsState(
+        targetValue =if (!checked) Color(0xFF0c1445) else Color(0xFF87CEEB),
+        animationSpec = tween(1000)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(bg.value),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        CustomSwitch(checked = checked, onCheckedChange = {checked = it}, switchStyle = SwitchStyle.Simple)
+        CustomSwitch(checked = checked, onCheckedChange = {checked = it}, switchStyle = SwitchStyle.SunMoonFade)
+        CustomSwitch(checked = checked, onCheckedChange = {checked = it})
     }
 }
