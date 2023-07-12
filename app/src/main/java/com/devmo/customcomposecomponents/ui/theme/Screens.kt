@@ -15,7 +15,11 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.unit.dp
 
 import androidx.navigation.NavController
-import com.devmo.customcomposecomponents.Navication
+import com.devmo.customcomposecomponents.Navigation
+import com.devmo.customcomposecomponents.ui.theme.premiumSwitch.PremiumSwitch
+import com.devmo.customcomposecomponents.ui.theme.premiumSwitch.PremiumSwitchStyle
+import com.devmo.customcomposecomponents.ui.theme.premiumSwitch.SunMoonContents
+import com.devmo.customcomposecomponents.ui.theme.premiumSwitch.TextDayNightSwitch
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -25,46 +29,52 @@ fun HomeScreen(navController: NavController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = { navController.navigate(Navication.TextCounter.name) },
+            onClick = { navController.navigate(Navigation.TextCounter.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Text Counter")
         }
         Button(
-            onClick = { navController.navigate(Navication.Progressbar.name) },
+            onClick = { navController.navigate(Navigation.Progressbar.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Progress Bar")
         }
         Button(
-            onClick = { navController.navigate(Navication.Timer.name) },
+            onClick = { navController.navigate(Navigation.Timer.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Timer")
         }
         Button(
-            onClick = { navController.navigate(Navication.Dropdown.name) },
+            onClick = { navController.navigate(Navigation.Dropdown.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Dropdown")
         }
         Button(
-            onClick = { navController.navigate(Navication.VolumeController.name) },
+            onClick = { navController.navigate(Navigation.VolumeController.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Volume Controller")
         }
         Button(
-            onClick = { navController.navigate(Navication.CreditCard.name) },
+            onClick = { navController.navigate(Navigation.CreditCard.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to Credit Card")
         }
         Button(
-            onClick = { navController.navigate(Navication.DayNightSwitch.name) },
+            onClick = { navController.navigate(Navigation.DayNightSwitch.name) },
             Modifier.fillMaxWidth(.9f)
         ) {
             Text("Go to DayNight Switch")
+        }
+        Button(
+            onClick = { navController.navigate(Navigation.PremiumDayNightSwitch.name) },
+            Modifier.fillMaxWidth(.9f)
+        ) {
+            Text("Go to Premium DayNight Switch")
         }
     }
 }
@@ -204,7 +214,7 @@ fun DayNightSwitch(navController: NavController) {
         mutableStateOf(false)
     }
     val bg = animateColorAsState(
-        targetValue =if (!checked) Color(0xFF0c1445) else Color(0xFF87CEEB),
+        targetValue = if (!checked) Color(0xFF0c1445) else Color(0xFF87CEEB),
         animationSpec = tween(1000)
     )
     Column(
@@ -214,8 +224,46 @@ fun DayNightSwitch(navController: NavController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        CustomSwitch(checked = checked, onCheckedChange = {checked = it}, switchStyle = SwitchStyle.Simple)
-        CustomSwitch(checked = checked, onCheckedChange = {checked = it}, switchStyle = SwitchStyle.SunMoonFade)
-        CustomSwitch(checked = checked, onCheckedChange = {checked = it})
+        CustomSwitch(
+            checked = checked,
+            onCheckedChange = { checked = it },
+            switchStyle = SwitchStyle.Simple
+        )
+        CustomSwitch(
+            checked = checked,
+            onCheckedChange = { checked = it },
+            switchStyle = SwitchStyle.SunMoonFade
+        )
+        CustomSwitch(checked = checked, onCheckedChange = { checked = it })
     }
+}
+
+@Composable
+fun PremiumSwitchScreen(navController: NavController) {
+    var checked by remember {
+        mutableStateOf(false)
+    }
+    val bg = animateColorAsState(
+        targetValue = if (!checked) Color(0xFF4a8ecc) else Color(0xFF262e38),
+        animationSpec = tween(1000)
+    )
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(bg.value),
+        verticalArrangement = Arrangement.SpaceAround,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        PremiumSwitch(
+            checked = checked,
+            onCheckedChangeListener = { checked = it },
+            style = PremiumSwitchStyle.SunMoonStyle
+        )
+        PremiumSwitch(
+            checked = checked,
+            onCheckedChangeListener = { checked = it },
+            style = PremiumSwitchStyle.TextStyle
+        )
+    }
+
 }

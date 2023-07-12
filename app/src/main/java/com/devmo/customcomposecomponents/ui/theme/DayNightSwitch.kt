@@ -10,7 +10,9 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
+import androidx.compose.material.lightColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,10 +20,10 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Fill
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -51,17 +53,14 @@ fun CustomSwitch(
             .size(width = 300.dp, height = 120.dp)
     ) {
         Surface(
-            shape = RoundedCornerShape(50), elevation = 2.dp, modifier = Modifier.fillMaxSize()
+            shape = RoundedCornerShape(50), elevation = 10.dp, modifier = Modifier.fillMaxSize()
         ) {
             when (switchStyle) {
                 SwitchStyle.MoonCoverSun -> SunMoonSwitchContents(
-                    checked = checked,
-                    duration = duration
+                    checked = checked, duration = duration
                 )
                 SwitchStyle.SunMoonFade -> SunMoonSwitchContents(
-                    checked = checked,
-                    style = 1,
-                    duration = duration
+                    checked = checked, style = 1, duration = duration
                 )
                 SwitchStyle.Simple -> SimpleSwitchContents(checked = !checked, duration = duration)
             }
@@ -174,8 +173,7 @@ private fun SunMoonSwitchContents(checked: Boolean, duration: Int = 500, style: 
                 }
             }
         } else if (style == 0) SunMoonSwitcher(
-            Modifier.offset(x = animatedOffset.value.dp), checked = checked,
-            duration
+            Modifier.offset(x = animatedOffset.value.dp), checked = checked, duration
         )
     }
     BoxWithConstraints {
@@ -205,10 +203,10 @@ private fun SunMoonSwitchContents(checked: Boolean, duration: Int = 500, style: 
 
 }
 
+
 @Composable
 private fun SunMoonSwitcher(
-    modifier: Modifier = Modifier, checked: Boolean,
-    duration: Int
+    modifier: Modifier = Modifier, checked: Boolean, duration: Int
 ) {
     BoxWithConstraints(
         modifier.clip(CircleShape)
@@ -217,7 +215,7 @@ private fun SunMoonSwitcher(
         val end = -constraints.maxWidth.toFloat()
         val centerX = animateFloatAsState(
             targetValue = if (!checked) start else end, animationSpec = tween(
-                durationMillis = (duration/5)*3
+                durationMillis = (duration / 5) * 3
             )
         )
 
@@ -241,20 +239,17 @@ sealed class SwitchStyle {
     object MoonCoverSun : SwitchStyle()
 }
 
+
 @Preview
 @Composable
 fun DayNightSwitchPrev() {
-    var checked by remember {
+    val checked by remember {
         mutableStateOf(false)
     }
-    Column {
-
-
-        CustomSwitch(checked = checked, onCheckedChange = {})
-
-        Box(modifier = Modifier.clickable { checked = !checked }) {
-            SunMoonSwitcher(checked = checked, duration = 500)
-        }
-    }
+//    SunMoonContents(
+//        modifier = Modifier,
+//        checked,
+//        onCheckedChange = {}
+//    )
 
 }
